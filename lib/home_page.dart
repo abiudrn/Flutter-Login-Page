@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login_page/auth.dart';
-
-import 'login_page.dart';
+import 'package:flutter_login_page/AuthProvider.dart';
 
 class HomePage extends StatelessWidget {
   static const String routeName = "/home";
-
-  final BaseAuth auth;
   final Function onSignedOut;
 
-  const HomePage({@required this.auth, @required this.onSignedOut});
+  const HomePage({@required this.onSignedOut});
   void _signOut(BuildContext context) async {
     try {
+      var auth = AuthProvider.of(context).auth;
       await auth.signOut();
       // Navigator.pushReplacementNamed(context, LoginPage.routeName);
       onSignedOut();

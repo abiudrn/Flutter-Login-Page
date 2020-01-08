@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login_page/auth.dart';
-import 'package:flutter_login_page/login_page.dart';
 import 'package:flutter_login_page/root_page.dart';
+
+import 'AuthProvider.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,15 +11,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return AuthProvider(
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: RootPage(),
       ),
-      home: RootPage(
-        auth: auth,
-      ),
-      routes: {LoginPage.routeName: (context) => LoginPage(auth: auth)},
+      auth: auth,
     );
   }
 }

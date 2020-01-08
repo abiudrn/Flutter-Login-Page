@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class BaseAuth {
   Stream<dynamic> get onAuthStateChanged;
@@ -12,7 +12,7 @@ abstract class BaseAuth {
 
 class Auth extends BaseAuth {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  // final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   Future<FirebaseUser> createUserWithEmailAndPassword(
