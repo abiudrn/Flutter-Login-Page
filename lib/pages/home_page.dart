@@ -1,17 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login_page/AuthProvider.dart';
 
 class HomePage extends StatelessWidget {
   static const String routeName = "/home";
-
-  void _signOut(BuildContext context) async {
-    try {
-      var auth = AuthProvider.of(context).auth;
-      await auth.signOut();
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +15,7 @@ class HomePage extends StatelessWidget {
                   fontSize: 17.0,
                   color: Colors.white,
                 )),
-            onPressed: () => _signOut(context),
+            onPressed: () => {},
           ),
         ],
       ),
