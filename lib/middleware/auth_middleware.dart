@@ -5,12 +5,29 @@ import 'package:redux/redux.dart';
 
 List<Middleware<AppState>> createAuthMiddleware() {
   final logIn = _createLogInMiddleware();
-  // final logOut = _createLogOutMiddleware();
+  final logOut = _createLogOutMiddleware();
 
   return [
     new TypedMiddleware<AppState, Login>(logIn),
-    // new TypedMiddleware<AppState, LogOut>(logOut)
+    new TypedMiddleware<AppState, LogOut>(logOut)
   ];
+}
+
+Middleware<AppState> _createLogOutMiddleware() {
+  return (Store store, action, NextDispatcher next) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    if (action is LogOut) {
+      try {
+        await _auth.signOut();
+        store.dispatch(LogOutSuccessful());
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    next(action);
+  };
 }
 
 Middleware<AppState> _createLogInMiddleware() {
