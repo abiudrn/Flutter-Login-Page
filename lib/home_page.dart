@@ -3,15 +3,11 @@ import 'package:flutter_login_page/AuthProvider.dart';
 
 class HomePage extends StatelessWidget {
   static const String routeName = "/home";
-  final Function onSignedOut;
 
-  const HomePage({@required this.onSignedOut});
   void _signOut(BuildContext context) async {
     try {
       var auth = AuthProvider.of(context).auth;
       await auth.signOut();
-      // Navigator.pushReplacementNamed(context, LoginPage.routeName);
-      onSignedOut();
     } catch (e) {
       print(e);
     }

@@ -1,14 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_login_page/AuthProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_login_page/validators.dart';
 
 enum FormType { login, signup }
 
 class LoginPage extends StatefulWidget {
   static const String routeName = "/login";
-  final Function onSignedIn;
-
-  LoginPage({@required this.onSignedIn});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -36,17 +34,13 @@ class _LoginPageState extends State<LoginPage> {
             children: <Widget>[
               TextFormField(
                 decoration: InputDecoration(labelText: "Email"),
-                validator: (value) {
-                  return value == null ? "ivalid email" : null;
-                },
+                validator: Validators.emailValidator,
                 onSaved: (value) => _email = value,
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: "Password"),
                 obscureText: true,
-                validator: (value) {
-                  return value == null ? "ivalid password" : null;
-                },
+                validator: Validators.passwordValidator,
                 onSaved: (value) => _password = value,
               ),
               SizedBox(
@@ -93,8 +87,6 @@ class _LoginPageState extends State<LoginPage> {
           password: _password,
         );
         print('Signed in: ${user.uid}');
-        // Navigator.pushReplacementNamed(context, HomePage.routeName);
-        widget.onSignedIn();
       } catch (error) {
         print(error);
       }
