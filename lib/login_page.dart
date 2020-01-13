@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_login_page/AuthProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_login_page/models/app_model.dart';
+import 'package:scoped_model/scoped_model.dart';
+
+import 'models/auth_state_model.dart';
 
 enum FormType { login, signup }
 
 class LoginPage extends StatefulWidget {
   static const String routeName = "/login";
-  final Function onSignedIn;
-
-  LoginPage({@required this.onSignedIn});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -17,7 +17,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _email;
   String _password;
-  // FormType _formType = FormType.login;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -52,21 +51,27 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: 12,
               ),
-              RaisedButton(
-                onPressed: validateAndSubmit,
-                child: Text(
-                  "Login",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
+              ScopedModelDescendant<AppModel>(
+                builder: (BuildContext context, Widget child, model) {
+                  return RaisedButton(
+                    onPressed: () {
+                      validateAndSubmit(model);
+                    },
+                    child: Text(
+                      "Login",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  );
+                },
               ),
               FlatButton(
                 child: Text(
                   "Signup",
                   style: TextStyle(fontSize: 20.0),
                 ),
-                onPressed: signupUser,
+                onPressed: () {},
               )
             ],
           ),
@@ -84,26 +89,19 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
-  void validateAndSubmit() async {
+  void validateAndSubmit(AppModel model) async {
     if (validateAndSave()) {
       try {
-        var auth = AuthProvider.of(context).auth;
-        FirebaseUser user = await auth.signInWithEmailAndPassword(
+        FirebaseUser user = (await model.auth.signInWithEmailAndPassword(
           email: _email,
           password: _password,
-        );
+        ))
+            .user;
         print('Signed in: ${user.uid}');
-        // Navigator.pushReplacementNamed(context, HomePage.routeName);
-        widget.onSignedIn();
+        model.setStatus(AuthStatus.signedIn);
       } catch (error) {
         print(error);
       }
     }
-  }
-
-  void signupUser() {
-    setState(() {
-      // _formType = FormType.signup;
-    });
   }
 }
