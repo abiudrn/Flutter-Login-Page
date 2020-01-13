@@ -1,14 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_login_page/AuthProvider.dart';
 import 'package:flutter/material.dart';
-
-enum FormType { login, signup }
+import 'package:flutter_login_page/stores/user/user_store.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   static const String routeName = "/login";
-  final Function onSignedIn;
-
-  LoginPage({@required this.onSignedIn});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -17,12 +12,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _email;
   String _password;
-  // FormType _formType = FormType.login;
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final store = Provider.of<UserStore>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Login Page"),
@@ -53,7 +49,9 @@ class _LoginPageState extends State<LoginPage> {
                 height: 12,
               ),
               RaisedButton(
-                onPressed: validateAndSubmit,
+                onPressed: () {
+                  validateAndSubmit(store);
+                },
                 child: Text(
                   "Login",
                   style: TextStyle(
@@ -66,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                   "Signup",
                   style: TextStyle(fontSize: 20.0),
                 ),
-                onPressed: signupUser,
+                onPressed: () {},
               )
             ],
           ),
@@ -84,26 +82,13 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
-  void validateAndSubmit() async {
+  void validateAndSubmit(UserStore store) async {
     if (validateAndSave()) {
       try {
-        var auth = AuthProvider.of(context).auth;
-        FirebaseUser user = await auth.signInWithEmailAndPassword(
-          email: _email,
-          password: _password,
-        );
-        print('Signed in: ${user.uid}');
-        // Navigator.pushReplacementNamed(context, HomePage.routeName);
-        widget.onSignedIn();
+        store.signInWithEmailAndPassword(_email, _password);
       } catch (error) {
         print(error);
       }
     }
-  }
-
-  void signupUser() {
-    setState(() {
-      // _formType = FormType.signup;
-    });
   }
 }

@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login_page/AuthProvider.dart';
+import 'package:flutter_login_page/stores/user/user_store.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   static const String routeName = "/home";
-  final Function onSignedOut;
 
-  const HomePage({@required this.onSignedOut});
-  void _signOut(BuildContext context) async {
+  void _signOut(UserStore store) async {
     try {
-      var auth = AuthProvider.of(context).auth;
-      await auth.signOut();
-      // Navigator.pushReplacementNamed(context, LoginPage.routeName);
-      onSignedOut();
+      store.signOut();
     } catch (e) {
       print(e);
     }
@@ -19,6 +15,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final store = Provider.of<UserStore>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome'),
@@ -29,7 +27,7 @@ class HomePage extends StatelessWidget {
                   fontSize: 17.0,
                   color: Colors.white,
                 )),
-            onPressed: () => _signOut(context),
+            onPressed: () => _signOut(store),
           ),
         ],
       ),
